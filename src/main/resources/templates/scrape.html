@@ -7,10 +7,11 @@
     <body>
         <form th:action="@{/scrape}" th:object="${SiteInfo}" method="post">
             <p>URL: <input type="text" name="url" /></p>
-            <p><input type="submit" value="Enviar"/></p>
+            <p><input type="submit" value="Adicionar"/></p>
         </form>
         <p th:text="'Site: ' + ${url}" />
         <p th:text="'Título: ' + ${title}" />
+        <ul th:utext="${list}" />
     </body>
     <a href="/">home screen</a>
 </html>

@@ -1,6 +1,7 @@
 package com.example.basicapp;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,8 @@ import org.jsoup.nodes.Document;
 @Controller
 public class ScrapeController {
     
+    private HashMap<String, String> listGlobal = new HashMap<>();
+
     @GetMapping("/scrape")
     public String scrape(Model model) {
         String result = "";
@@ -32,6 +35,7 @@ public class ScrapeController {
           } catch (IOException e) {
             e.printStackTrace();
           }
+          
 
         model.addAttribute("url", url);
         model.addAttribute("title", result);
@@ -42,8 +46,8 @@ public class ScrapeController {
     @PostMapping("/scrape")
     public String scrapeSubmit(@ModelAttribute("url") String url, Model model) {
 
-      String result = "GG LOL";
-
+      String result = "";
+      String finalList = "";
 
       try {
           // Here we create a document object and use JSoup to fetch the website
@@ -57,8 +61,20 @@ public class ScrapeController {
           e.printStackTrace();
         }
 
+        if(!listGlobal.containsKey(url))
+        {
+          listGlobal.put(url, result);
+        }
+
+        Object[] urls = listGlobal.keySet().toArray();
+
+        for(int i = 0; i < urls.length; i++) {
+          finalList += "<li><p>" + urls[i].toString() +"</p><p>" + listGlobal.get(urls[i].toString()) + "</p></li>";
+        }
+
         model.addAttribute("title", result);
         model.addAttribute("url", url);
+        model.addAttribute("list", finalList);
 
       return "scrape";
     }
