@@ -1,0 +1,16 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+    <title>TESTE</title> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+    <body>
+        <form th:action="@{/scrape}" th:object="${SiteInfo}" method="post">
+            <p>URL: <input type="text" name="url" /></p>
+            <p><input type="submit" value="Enviar"/></p>
+        </form>
+        <p th:text="'Site: ' + ${url}" />
+        <p th:text="'Título: ' + ${title}" />
+    </body>
+    <a href="/">home screen</a>
+</html>
