@@ -17,7 +17,7 @@ import org.jsoup.nodes.Document;
 @Controller
 public class ScrapeController {
     
-    private HashMap<String, String> listGlobal = new HashMap<>();
+    public HashMap<String, String> listGlobal = new HashMap<>();
 
     @GetMapping("/scrape")
     public String scrape(Model model) {
@@ -37,17 +37,22 @@ public class ScrapeController {
           }
           
 
-        model.addAttribute("url", url);
-        model.addAttribute("title", result);
+        model.addAttribute("url", "URL: " + url);
+        model.addAttribute("title", "Título" + result);
         
         return "scrape";
     }
 
-    @PostMapping("/scrape")
+    @PostMapping(value = "/scrapesite", params = "submit")
     public String scrapeSubmit(@ModelAttribute("url") String url, Model model) {
 
       String result = "";
       String finalList = "";
+
+      if(url.isEmpty())
+      {
+        return "scrape";
+      }
 
       try {
           // Here we create a document object and use JSoup to fetch the website
@@ -69,13 +74,35 @@ public class ScrapeController {
         Object[] urls = listGlobal.keySet().toArray();
 
         for(int i = 0; i < urls.length; i++) {
-          finalList += "<li><p>" + urls[i].toString() +"</p><p>" + listGlobal.get(urls[i].toString()) + "</p></li>";
+          finalList += "<form th:action=\"@{/scrapesite}\" method=\"post\"><li><p> SITE: " + urls[i].toString() +"</p><p> TÍTULO: " + listGlobal.get(urls[i].toString()) + "</p><input type=\"hidden\" name=\"url\" value=" + urls[i].toString() +"/><input name=\"cancel\" type=\"submit\" value=\"Remover\"/></li></form>";
         }
 
-        model.addAttribute("title", result);
-        model.addAttribute("url", url);
+        model.addAttribute("title", "");
+        model.addAttribute("url", "");
         model.addAttribute("list", finalList);
 
+      return "scrape";
+    }
+
+    @PostMapping(value = "/scrapesite", params = "cancel")
+    public String deleteItem(@ModelAttribute("url") String url, Model model) {
+
+      String finalList = "";
+
+      //Sending the url via value param from the input tag, adds a symbol and needs to be removed before the operation
+      String urlTrimmed = url.toString().replaceAll(".$", "");
+
+      listGlobal.remove(urlTrimmed);
+
+      Object[] urls = listGlobal.keySet().toArray();
+
+      for(int i = 0; i < urls.length; i++) {
+        finalList += "<form th:action=\"@{/scrapesite}\" method=\"post\"><li><p> SITE: " + urls[i].toString() +"</p><p> TÍTULO: " + listGlobal.get(urls[i].toString()) + "</p><input type=\"hidden\" name=\"url\" value=" + urls[i] +"/><input name=\"cancel\" type=\"submit\" value=\"Remover\"/></li></form>";
+      }
+
+      model.addAttribute("url", "");
+      model.addAttribute("title", "");
+      model.addAttribute("list", finalList);
       return "scrape";
     }
 
