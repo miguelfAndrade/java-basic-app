@@ -1,9 +1,27 @@
-version: '3.8'
+version: '3'
 services:
   basicapp:
     build: .
     ports:
-      - 8080:8080
+      - 3000:8080
     volumes:
       - ./:/app
     command: ./mvnw spring-boot:run 
+
+  basicapp-db:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "27017:27017"
+
+  adminer:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8080:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_SERVER: basicapp-db
