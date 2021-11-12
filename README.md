@@ -5,7 +5,11 @@ Basic Java web app develop with Spring Boot, Maven, MongoDB and Docker.
 It's a web app that takes an url and retrives the title of that web page.  
 It just serves as a training ground for the tecnologies used.
 
-If you are using Windows have attetion to the mvnw file, it must have LF line endings.
+Attention to the mvnw file, it must have LF line endings.
+
+If you are using Linux, you need to change the `Dockerfile` and `docker-compose.yml`.
+Add `RUN chmod u+x ./mvnw` before the line 9 in the `Dockerfile`.
+Change the the line 9 of the `docker-compose.yml` to this `sh -c "chmod u+x ./mvnw && ./mvnw spring-boot:run"`
 
 To run the app you need to have Docker and Docker Compose installed. Run `docker-compose up` on the terminal.
 
